@@ -46,9 +46,7 @@ jobs:
       - name: Commit formatting
         if: ${{ steps.pre_commit.outputs.pre_commit_failed == 1 }}
         run: |
-          git config --global user.name 'Your Name'
-          git config --global user.email 'your-username@users.noreply.github.com'
-          git commit -am "Automated report"
+          git commit -am "style: linting"
           git push
 
       - uses: mshick/add-pr-comment@v2
