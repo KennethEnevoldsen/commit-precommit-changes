@@ -18,6 +18,7 @@ jobs:
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.PRE_COMMIT }}
 
       - uses: actions/setup-python@v4
         with:
@@ -42,9 +43,12 @@ jobs:
             exit 1
           fi
 
-      - uses: EndBug/add-and-commit@v9
-        with:
-          default_author: github_actions
+      - name: Commit report
+        run: |
+          git config --global user.name 'Your Name'
+          git config --global user.email 'your-username@users.noreply.github.com'
+          git commit -am "Automated report"
+          git push
 
       - uses: mshick/add-pr-comment@v2
         if: ${{ failure() && github.event_name == 'pull_request'}}
