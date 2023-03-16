@@ -43,7 +43,8 @@ jobs:
             exit 1
           fi
 
-      - name: Commit report
+      - name: Commit formatting
+        if: ${{ steps.pre_commit.outputs.pre_commit_failed == 1 }}
         run: |
           git config --global user.name 'Your Name'
           git config --global user.email 'your-username@users.noreply.github.com'
