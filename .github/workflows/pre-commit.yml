@@ -52,9 +52,12 @@ jobs:
           git push
 
       - uses: mshick/add-pr-comment@v2
-        if: ${{ failure() && github.event_name == 'pull_request'}}
+        if: ${{ steps.pre_commit.outputs.pre_commit_failed == 1 }}
         id: add_comment
         with:
           message: |
-            ✨ Looks like some pre-commit hooks failed ✨
+            ✨ Looks like some pre-commit hooks failed. ✨
+            
+            We suggest using `git pull --rebase` to apply them locally
+            
             Those that could be automatically fixed have been comitted to the branch. If any failed due to other causes, you can fix it locally by running `pre-commit run --hook-stage push --all-files`
