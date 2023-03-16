@@ -39,15 +39,14 @@ jobs:
             exit 1
           fi
 
-      - name: Find Comment
-        uses: peter-evans/find-comment@v2
-        id: find_comment
-        if: ${{github.event_name == 'pull_request'}}
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: "github-actions[bot]"
-          body-includes: ✨ Looks like some pre-commit hooks failed ✨
-          continue-on-error: true
+      - name: Commit and push linting changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "actions@github.com"
+          git commit -a -m "style: linting"
+          git push
 
       - uses: mshick/add-pr-comment@v2
         if: ${{ failure() && github.event_name == 'pull_request'}}
@@ -55,16 +54,4 @@ jobs:
         with:
           message: |
             ✨ Looks like some pre-commit hooks failed ✨
-
-            If you want to fix this, we recommend doing it locally by:
-              1. Installing pre-commit hooks: `pre-commit install --install-hooks -t pre-push`
-              2. Diagnosing the errors by running `pre-commit run --hook-stage push --all-files` 
-
-            After installing pre-commit hooks, they will run automatically in the future when you run `git push`.
-
-      - uses: mshick/add-pr-comment@v2
-        if: ${{ steps.mypy.outputs.mypy_failed == 0 && steps.find_comment.outputs.comment-id != '' && github.event_name == 'pull_request'}}
-        with:
-          message-id: ${{ steps.find_comment.outputs.comment-id }}
-          message: |
-            🌟 Pre-commit succeeds! 🌟
+            Those that could be automatically fixed have been comitted to the branch. If any failed due to other causes, you can fix it locally by running `pre-commit run --hook-stage push --all-files`
