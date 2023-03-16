@@ -1,0 +1,16 @@
+{
+    "_copy_without_render": [
+        "*.github"
+    ],
+    "_template": "https://github.com/MartinBernstorff/swift-python-cookiecutter",
+    "author": "Martin Bernstorff",
+    "copyright_year": "2023",
+    "email": "martinbernstorff@gmail.com",
+    "friendly_name": "Commit Precommit Changes",
+    "github_user": "MartinBernstorff",
+    "license": "MIT",
+    "package_name": "commit_precommit_changes",
+    "project_name": "commit-precommit-changes",
+    "setup_for_dev_bash_script": "y",
+    "version": "0.0.0"
+}
